@@ -2,6 +2,7 @@ module ActiveScaffold::Actions
   module Export
     def self.included(base)
       base.before_filter :export_authorized?, :only => [:export]
+      base.before_filter :show_export_authorized?, :only => [:show_export]
       base.before_filter :init_session_var
 
       as_export_plugin_path = File.join(ActiveScaffold::Config::Export.plugin_directory, 'frontends', 'default' , 'views')
@@ -88,5 +89,10 @@ module ActiveScaffold::Actions
     def export_authorized?
       authorized_for?(:action => :read)
     end
+
+    def show_export_authorized?
+      export_authorized?
+    end
+
   end
 end
