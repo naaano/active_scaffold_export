@@ -4,10 +4,6 @@ module ActiveScaffold::Actions
       base.before_filter :export_authorized?, :only => [:export]
       base.before_filter :show_export_authorized?, :only => [:show_export]
       base.before_filter :init_session_var
-
-      as_export_plugin_path = File.join(ActiveScaffold::Config::Export.plugin_directory, 'frontends', 'default' , 'views')
-      
-      base.add_active_scaffold_path as_export_plugin_path
     end
 
     def init_session_var
