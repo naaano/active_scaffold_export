@@ -53,14 +53,14 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
-      s.add_runtime_dependency(%q<active_scaffold>, [">= 3.3.0"])
+      s.add_runtime_dependency 'active_scaffold', '>= 3.3.0.rc'
     else
       s.add_dependency(%q<active_scaffold>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_dependency(%q<rcov>, [">= 0"])
-      s.add_dependency(%q<active_scaffold>, [">= 3.3.0"])
+      s.add_runtime_dependency 'active_scaffold', '>= 3.3.0.rc'
     end
   else
     s.add_dependency(%q<active_scaffold>, [">= 0"])
@@ -68,7 +68,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
     s.add_dependency(%q<rcov>, [">= 0"])
-    s.add_dependency(%q<active_scaffold>, ["~> 3.3.0"])
+    s.add_runtime_dependency 'active_scaffold', '>= 3.3.0.rc'
   end
 end
 
