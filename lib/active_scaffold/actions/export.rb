@@ -25,43 +25,47 @@ module ActiveScaffold::Actions
 
     # if invoked directly, will use default configuration
     def export
-      export_config = active_scaffold_config.export
-      if params[:export_columns].nil?
-        export_columns = {}
-        export_config.columns.each { |col|
-          export_columns[col.name.to_sym] = 1
-        }
-        options = {
-          :export_columns => export_columns,
-          :full_download => export_config.default_full_download.to_s,
-          :delimiter => export_config.default_delimiter,
-          :skip_header => export_config.default_skip_header.to_s
-        }
-        params.merge!(options)
-      end
+      respond_to do |format|
+        format.csv do
+          export_config = active_scaffold_config.export
+          if params[:export_columns].nil?
+            export_columns = {}
+            export_config.columns.each { |col|
+              export_columns[col.name.to_sym] = 1
+            }
+            options = {
+              :export_columns => export_columns,
+              :full_download => export_config.default_full_download.to_s,
+              :delimiter => export_config.default_delimiter,
+              :skip_header => export_config.default_skip_header.to_s
+            }
+            params.merge!(options)
+          end
 
-      # this is required if you want this to work with IE
-      if request.env['HTTP_USER_AGENT'] =~ /msie/i
-        response.headers['Pragma'] = "public"
-        response.headers['Cache-Control'] = "no-cache, must-revalidate, post-check=0, pre-check=0"
-        response.headers['Expires'] = "0"
-      end
+          # this is required if you want this to work with IE
+          if request.env['HTTP_USER_AGENT'] =~ /msie/i
+            response.headers['Pragma'] = "public"
+            response.headers['Cache-Control'] = "no-cache, must-revalidate, post-check=0, pre-check=0"
+            response.headers['Expires'] = "0"
+          end
 
-      response.headers['Content-type'] = 'text/csv'
-      response.headers['Content-Disposition'] = "attachment; filename=#{export_file_name}"
+          response.headers['Content-type'] = 'text/csv'
+          response.headers['Content-Disposition'] = "attachment; filename=#{export_file_name}"
 
-      @export_columns = export_config.columns.reject { |col| params[:export_columns][col.name.to_sym].nil? }
-      includes_for_export_columns = @export_columns.collect{ |col| col.includes }.flatten.uniq.compact
-      self.active_scaffold_includes.concat includes_for_export_columns
-      @export_config = export_config
+          @export_columns = export_config.columns.reject { |col| params[:export_columns][col.name.to_sym].nil? }
+          includes_for_export_columns = @export_columns.collect{ |col| col.includes }.flatten.uniq.compact
+          self.active_scaffold_includes.concat includes_for_export_columns
+          @export_config = export_config
 
-      # start streaming output
-      self.response_body = Enumerator.new do |y|
-        find_items_for_export do |records|
-          @records = records
-          str = render_to_string :partial => 'export', :layout => false, :formats => [:csv]
-          y << str
-          params[:skip_header] = 'true' # skip header on the next run
+          # start streaming output
+          self.response_body = Enumerator.new do |y|
+            find_items_for_export do |records|
+              @records = records
+              str = render_to_string :partial => 'export', :layout => false, :formats => [:csv]
+              y << str
+              params[:skip_header] = 'true' # skip header on the next run
+            end
+          end
         end
       end
     end

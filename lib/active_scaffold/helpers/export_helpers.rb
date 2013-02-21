@@ -37,7 +37,19 @@ module ActiveScaffold
       end
 
       def format_export_column(raw_value)
-        format_value(raw_value)
+        format_value_for_csv(raw_value)
+      end
+
+      def format_value_for_csv(column_value)
+        value = if column_empty?(column_value)
+          active_scaffold_config.list.empty_field_text
+        elsif column_value.is_a?(Time) || column_value.is_a?(Date)
+          l(column_value, :format => :default)
+        elsif [FalseClass, TrueClass].include?(column_value.class)
+          as_(column_value.to_s.to_sym)
+        else
+          column_value.to_s
+        end
       end
 
       def format_singular_association_export_column(association_record)
