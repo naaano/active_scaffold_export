@@ -1,9 +1,14 @@
 <% export_config = active_scaffold_config.export %>
 <h3><%=as_(:columns_for_export)%></h3>
+<% if ActiveScaffold.js_framework == :jquery %>
+<%= link_to_function 'Select All',  'jQuery(".columnCheckbox").prop("checked", true);',  :class => 'active-scaffold-footer' %>
+&nbsp;&nbsp;
+<%= link_to_function 'Select None', 'jQuery(".columnCheckbox").prop("checked", false);', :class => 'active-scaffold-footer' %>
+<% end %>
 <div class="columns checkbox-list">
 <% export_config.columns.each do |column| -%>
   <div class="column checkbox-wrapper">
-    <%= content_tag(:label, check_box_tag("export_columns[#{column.name}]", 1, !export_config.default_deselected_columns.include?(column.name)) + "&nbsp;#{column.label}".html_safe) %>
+    <%= content_tag(:label, check_box_tag("export_columns[#{column.name}]", 1, !export_config.default_deselected_columns.include?(column.name), :class => 'columnCheckbox') + "&nbsp;#{column.label}".html_safe) %>
   </div>
 <% end -%>
 &nbsp;
@@ -23,6 +28,13 @@
   </div>
   <div class="option checkbox-wrapper">
     <%= content_tag(:label, radio_button_tag('full_download', true, export_config.default_full_download) + " #{as_(:all_pages)}".html_safe) if export_config.allow_full_download %>
+  </div>
+  <div class="separator"></div>
+  <div class="option checkbox-wrapper">
+    <%= content_tag(:label, radio_button_tag('format', :xlsx, export_config.default_file_format.to_sym == :xlsx) + ' XLSX') %>
+  </div>
+  <div class="option checkbox-wrapper">
+    <%= content_tag(:label, radio_button_tag('format', :csv, export_config.default_file_format.to_sym == :csv) + ' CSV') %>
   </div>
   &nbsp;
 </div>

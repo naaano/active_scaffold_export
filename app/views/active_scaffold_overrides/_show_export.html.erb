@@ -1,6 +1,6 @@
 <%= render :partial => "base_form", :locals => {:xhr => false,
                                                 :form_action => :export,
-                                                :url_options => params_for(:action => :export, :format => @export_config.default_file_format),
+                                                :url_options => params_for(:action => :export),
                                                 :method => :post,
                                                 :cancel_link => true,
                                                 :headline => as_(:export),

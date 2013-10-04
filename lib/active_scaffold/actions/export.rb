@@ -125,7 +125,19 @@ module ActiveScaffold::Actions
     # The default name of the downloaded file.
     # You may override the method to specify your own file name generation.
     def export_file_name
-      "#{self.controller_name}.#{active_scaffold_config.export.default_file_format}"
+      filename = self.controller_name
+
+      if params[:format]
+        if params[:format].to_sym == :xlsx
+          filename << '.xlsx'
+        elsif params[:format].to_sym == :csv
+          filename << '.csv'
+        end
+      else
+        filename << ".#{active_scaffold_config.export.default_file_format}"
+      end
+
+      return filename
     end
 
     # The default security delegates to ActiveRecordPermissions.
