@@ -130,7 +130,7 @@ module ActiveScaffold::Actions
     # The default name of the downloaded file.
     # You may override the method to specify your own file name generation.
     def export_file_name
-      filename = self.controller_name
+      filename = self.controller_name.clone
 
       if params[:format]
         if params[:format].to_sym == :xlsx
