@@ -40,9 +40,7 @@ module ActiveScaffold::Actions
         params.merge!(options)
       end
 
-      @export_columns = export_config.columns.reject { |col| params[:export_columns][col.name.to_sym].nil? }
-      includes_for_export_columns = @export_columns.collect{ |col| col.includes }.flatten.uniq.compact
-      self.active_scaffold_includes.concat includes_for_export_columns
+      set_includes_for_columns(:export)
       @export_config = export_config
       # Make sure active_scaffold's find_page is dealing with the same list of
       # columns. Prevents an invalid SQL query when exporting after filtering
@@ -97,6 +95,13 @@ module ActiveScaffold::Actions
     end
 
     protected
+    def export_columns
+      @export_columns = active_scaffold_config.export.columns.reject { |col| params[:export_columns][col.name.to_sym].nil? }
+      sorting = active_scaffold_config.list.user.sorting || active_scaffold_config.list.sorting
+      sorting_columns = sorting.reject { |col, _| @export_columns.include?(col) }.map(&:first)
+      @export_columns + sorting_columns
+    end
+
     # The actual algorithm to do the export
     def find_items_for_export(&block)
       find_options = { :sorting =>
