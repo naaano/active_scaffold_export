@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "active_scaffold_export"
-  s.version = "3.3.1"
+  s.version = "3.3.2"
 
   s.authors = ["Volker Hochstein", "Sergio Cambra", "Hernan Astudillo"]
   s.description = "Exporting Records with ActiveScaffold"
