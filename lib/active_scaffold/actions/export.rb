@@ -3,11 +3,6 @@ module ActiveScaffold::Actions
     def self.included(base)
       base.before_filter :export_authorized?, :only => [:export]
       base.before_filter :show_export_authorized?, :only => [:show_export]
-      base.before_filter :init_session_var
-    end
-
-    def init_session_var
-      session[:search] = params[:search] if !params[:search].nil? || params[:commit] == as_('Search')
     end
 
     # display the customization form or skip directly to export
@@ -104,7 +99,6 @@ module ActiveScaffold::Actions
           active_scaffold_config.list.sorting : active_scaffold_config.list.user.sorting,
         :pagination => true
       }
-      params[:search] = session[:search]
       do_search rescue nil
       params[:segment_id] = session[:segment_id]
       do_segment_search rescue nil
