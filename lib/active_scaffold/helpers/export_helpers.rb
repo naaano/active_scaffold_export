@@ -17,12 +17,11 @@ module ActiveScaffold
 
           if column.association.nil? or column_empty?(raw_value)
             csv ? format_export_column(raw_value) : raw_value # xlsx needs original data type
-          else
-            case column.association.macro
-            when :has_one, :belongs_to
-              format_singular_association_export_column(raw_value)
-            when :has_many, :has_and_belongs_to_many
+          elsif column.association
+            if column.association.collection?
               format_plural_association_export_column(raw_value)
+            else
+              format_singular_association_export_column(raw_value)
             end
           end
         end
