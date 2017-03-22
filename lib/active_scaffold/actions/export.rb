@@ -59,16 +59,18 @@ module ActiveScaffold::Actions
         format.csv do
           response.headers['Content-type'] = 'text/csv'
           # start streaming output
+          @output = ""
+          find_items_for_export do |records|
+            @records = records
+            str = render_to_string :partial => 'export', :layout => false, :formats => [:csv]
+            @output << str
+            params[:skip_header] = 'true' # skip header on the next run
+          end
           self.response_body = Enumerator.new do |y|
-            find_items_for_export do |records|
-              @records = records
-              str = render_to_string :partial => 'export', :layout => false, :formats => [:csv]
-              y << str
-              params[:skip_header] = 'true' # skip header on the next run
-            end
+            y << @output
           end
         end
-        format.xlsx do 
+        format.xlsx do
           response.headers['Content-type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           p = Axlsx::Package.new
           header = p.workbook.styles.add_style sz: 11, b: true,:bg_color => "69B5EF", :fg_color => "FF", alignment: { horizontal: :center }
@@ -82,7 +84,7 @@ module ActiveScaffold::Actions
           end
           stream = p.to_stream # when adding rows to sheet, they won't pass to this stream if declared before. axlsx issue?
           self.response_body = Enumerator.new do |y|
-            y << stream.read 
+            y << stream.read
           end
         end
 
