@@ -1,8 +1,8 @@
 module ActiveScaffold::Actions
   module Export
     def self.included(base)
-      base.before_filter :export_authorized?, :only => [:export]
-      base.before_filter :show_export_authorized?, :only => [:show_export]
+      base.before_action :export_authorized?, :only => [:export]
+      base.before_action :show_export_authorized?, :only => [:show_export]
     end
 
     # display the customization form or skip directly to export
